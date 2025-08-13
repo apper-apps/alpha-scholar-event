@@ -1,18 +1,25 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/organisms/Header";
-import StudentTable from "@/components/organisms/StudentTable";
-import Button from "@/components/atoms/Button";
-import Card from "@/components/atoms/Card";
-import FormField from "@/components/molecules/FormField";
-import Input from "@/components/atoms/Input";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
 import { studentService } from "@/services/api/studentService";
 import { classService } from "@/services/api/classService";
 import { toast } from "react-toastify";
+import ImportModal from "@/components/molecules/ImportModal";
+import { downloadCSV, generateCSV } from "@/utils/csvUtils";
+import ApperIcon from "@/components/ApperIcon";
+import Header from "@/components/organisms/Header";
+import StudentTable from "@/components/organisms/StudentTable";
+import FormField from "@/components/molecules/FormField";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import gradesData from "@/services/mockData/grades.json";
+import classesData from "@/services/mockData/classes.json";
+import attendanceData from "@/services/mockData/attendance.json";
+import studentsData from "@/services/mockData/students.json";
+import assignmentsData from "@/services/mockData/assignments.json";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -33,7 +40,6 @@ const Students = () => {
   });
 
   const navigate = useNavigate();
-
   const loadData = async () => {
     try {
       setLoading(true);
@@ -152,8 +158,89 @@ const Students = () => {
     }
   };
 
-  const handleRetry = () => {
+const handleRetry = () => {
     loadData();
+  };
+
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  const handleExport = () => {
+    if (filteredStudents.length === 0) {
+      toast.error("No students to export");
+      return;
+    }
+
+    try {
+      const headers = ['First Name', 'Last Name', 'Email', 'Class', 'Status', 'Enrollment Date'];
+      const data = filteredStudents.map(student => [
+        student.firstName || '',
+        student.lastName || '',
+        student.email || '',
+        student.classId || '',
+        student.status || '',
+        student.enrollmentDate ? new Date(student.enrollmentDate).toLocaleDateString() : ''
+      ]);
+
+      const csvContent = generateCSV(headers, data);
+      downloadCSV(csvContent, `students_${new Date().toISOString().split('T')[0]}.csv`);
+      toast.success("Students exported successfully");
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error("Failed to export students");
+    }
+  };
+
+  const handleImport = async (csvData) => {
+    try {
+      if (!csvData || csvData.length === 0) {
+        toast.error("No data to import");
+        return;
+      }
+
+      const importedStudents = [];
+      const errors = [];
+
+      for (let i = 0; i < csvData.length; i++) {
+        const row = csvData[i];
+        
+        if (!row.firstName || !row.lastName || !row.email || !row.classId) {
+          errors.push(`Row ${i + 1}: Missing required fields`);
+          continue;
+        }
+
+        try {
+          const studentData = {
+            firstName: row.firstName.trim(),
+            lastName: row.lastName.trim(),
+            email: row.email.trim(),
+            classId: row.classId.trim(),
+            status: row.status?.trim() || 'active'
+          };
+
+          const newStudent = await studentService.create(studentData);
+          importedStudents.push(newStudent);
+        } catch (error) {
+          errors.push(`Row ${i + 1}: ${error.message}`);
+        }
+      }
+
+      if (importedStudents.length > 0) {
+        const updatedStudents = [...students, ...importedStudents];
+        setStudents(updatedStudents);
+        setFilteredStudents(updatedStudents);
+        toast.success(`Successfully imported ${importedStudents.length} students`);
+      }
+
+      if (errors.length > 0) {
+        console.error('Import errors:', errors);
+        toast.warning(`${errors.length} rows had errors. Check console for details.`);
+      }
+
+      setShowImportModal(false);
+    } catch (error) {
+      console.error('Import error:', error);
+      toast.error("Failed to import students");
+    }
   };
 
   if (loading) {
@@ -201,17 +288,33 @@ const Students = () => {
       <Header title="Students" onSearch={handleSearch} />
       
       <div className="p-6 lg:p-8">
-        <div className="flex items-center justify-between mb-6">
+<div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-gray-600">
               Manage your student roster, track enrollment, and update student information.
             </p>
           </div>
-          <Button onClick={handleAdd} variant="primary">
-            <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
-            Add Student
-          </Button>
+          <div className="flex items-center space-x-3">
+            <Button onClick={handleExport} variant="outline">
+              <ApperIcon name="Download" className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
+            <Button onClick={() => setShowImportModal(true)} variant="outline">
+              <ApperIcon name="Upload" className="w-4 h-4 mr-2" />
+              Import CSV
+            </Button>
+            <Button onClick={handleAdd} variant="primary">
+              <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
+              Add Student
+            </Button>
+          </div>
         </div>
+
+        <ImportModal
+          show={showImportModal}
+          onClose={() => setShowImportModal(false)}
+          onImport={handleImport}
+        />
 
         {filteredStudents.length === 0 ? (
           <Empty

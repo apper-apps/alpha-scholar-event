@@ -50,8 +50,50 @@ export const studentService = {
     return { ...deletedStudent };
   },
 
-  async getByClass(classId) {
+async getByClass(classId) {
     await delay(300);
     return students.filter(s => s.classId === classId).map(s => ({ ...s }));
+  },
+
+  async importFromCSV(csvData) {
+    await delay(500);
+    
+    const importedStudents = [];
+    const existingEmails = new Set(students.map(s => s.email.toLowerCase()));
+    
+    for (const studentData of csvData) {
+      // Check for duplicate email
+      if (existingEmails.has(studentData.email.toLowerCase())) {
+        continue; // Skip duplicates
+      }
+      
+      // Generate new ID
+      const newId = Math.max(...students.map(s => s.Id)) + 1 + importedStudents.length;
+      
+      const newStudent = {
+        Id: newId,
+        firstName: studentData.firstName,
+        lastName: studentData.lastName,
+        email: studentData.email,
+        classId: studentData.classId,
+        enrollmentDate: studentData.enrollmentDate || new Date().toISOString().split('T')[0],
+        status: studentData.status || 'active'
+      };
+      
+      students.push(newStudent);
+      importedStudents.push(newStudent);
+      existingEmails.add(studentData.email.toLowerCase());
+    }
+    
+    return {
+      imported: importedStudents.length,
+      skipped: csvData.length - importedStudents.length,
+      students: importedStudents.map(s => ({ ...s }))
+    };
+  },
+
+  async exportToCSV() {
+    await delay(200);
+    return students.map(s => ({ ...s }));
   }
 };
