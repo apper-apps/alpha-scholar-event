@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "classId": "10A",
+    "title": "Algebra Quiz 1",
+    "type": "quiz",
+    "dueDate": "2024-01-10",
+    "maxScore": 100
+  },
+  {
+    "Id": 2,
+    "classId": "10A",
+    "title": "Geometry Test",
+    "type": "test",
+    "dueDate": "2024-01-15",
+    "maxScore": 100
+  },
+  {
+    "Id": 3,
+    "classId": "10B",
+    "title": "Chemistry Lab Report",
+    "type": "project",
+    "dueDate": "2024-01-20",
+    "maxScore": 50
+  },
+  {
+    "Id": 4,
+    "classId": "10C",
+    "title": "Shakespeare Essay",
+    "type": "homework",
+    "dueDate": "2024-01-18",
+    "maxScore": 75
+  }
+]

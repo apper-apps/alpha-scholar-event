@@ -1,0 +1,137 @@
+[
+  {
+    "Id": 1,
+    "firstName": "Emma",
+    "lastName": "Thompson",
+    "email": "emma.thompson@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-15",
+    "status": "active"
+  },
+  {
+    "Id": 2,
+    "firstName": "Liam",
+    "lastName": "Johnson",
+    "email": "liam.johnson@email.com",
+    "classId": "10B",
+    "enrollmentDate": "2023-08-16",
+    "status": "active"
+  },
+  {
+    "Id": 3,
+    "firstName": "Olivia",
+    "lastName": "Williams",
+    "email": "olivia.williams@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-17",
+    "status": "active"
+  },
+  {
+    "Id": 4,
+    "firstName": "Noah",
+    "lastName": "Brown",
+    "email": "noah.brown@email.com",
+    "classId": "10C",
+    "enrollmentDate": "2023-08-18",
+    "status": "active"
+  },
+  {
+    "Id": 5,
+    "firstName": "Ava",
+    "lastName": "Davis",
+    "email": "ava.davis@email.com",
+    "classId": "10B",
+    "enrollmentDate": "2023-08-19",
+    "status": "inactive"
+  },
+  {
+    "Id": 6,
+    "firstName": "William",
+    "lastName": "Miller",
+    "email": "william.miller@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-20",
+    "status": "active"
+  },
+  {
+    "Id": 7,
+    "firstName": "Sophia",
+    "lastName": "Wilson",
+    "email": "sophia.wilson@email.com",
+    "classId": "10C",
+    "enrollmentDate": "2023-08-21",
+    "status": "active"
+  },
+  {
+    "Id": 8,
+    "firstName": "James",
+    "lastName": "Moore",
+    "email": "james.moore@email.com",
+    "classId": "10B",
+    "enrollmentDate": "2023-08-22",
+    "status": "active"
+  },
+  {
+    "Id": 9,
+    "firstName": "Isabella",
+    "lastName": "Taylor",
+    "email": "isabella.taylor@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-23",
+    "status": "active"
+  },
+  {
+    "Id": 10,
+    "firstName": "Benjamin",
+    "lastName": "Anderson",
+    "email": "benjamin.anderson@email.com",
+    "classId": "10C",
+    "enrollmentDate": "2023-08-24",
+    "status": "graduated"
+  },
+  {
+    "Id": 11,
+    "firstName": "Mia",
+    "lastName": "Thomas",
+    "email": "mia.thomas@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-25",
+    "status": "active"
+  },
+  {
+    "Id": 12,
+    "firstName": "Lucas",
+    "lastName": "Jackson",
+    "email": "lucas.jackson@email.com",
+    "classId": "10B",
+    "enrollmentDate": "2023-08-26",
+    "status": "active"
+  },
+  {
+    "Id": 13,
+    "firstName": "Charlotte",
+    "lastName": "White",
+    "email": "charlotte.white@email.com",
+    "classId": "10C",
+    "enrollmentDate": "2023-08-27",
+    "status": "active"
+  },
+  {
+    "Id": 14,
+    "firstName": "Henry",
+    "lastName": "Harris",
+    "email": "henry.harris@email.com",
+    "classId": "10A",
+    "enrollmentDate": "2023-08-28",
+    "status": "active"
+  },
+  {
+    "Id": 15,
+    "firstName": "Amelia",
+    "lastName": "Martin",
+    "email": "amelia.martin@email.com",
+    "classId": "10B",
+    "enrollmentDate": "2023-08-29",
+    "status": "inactive"
+  }
+]

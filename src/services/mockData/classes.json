@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "name": "Mathematics Advanced",
+    "section": "10A",
+    "academicYear": "2023-2024",
+    "teacherId": "teacher1"
+  },
+  {
+    "Id": 2,
+    "name": "Science Foundation",
+    "section": "10B",
+    "academicYear": "2023-2024",
+    "teacherId": "teacher2"
+  },
+  {
+    "Id": 3,
+    "name": "English Literature",
+    "section": "10C",
+    "academicYear": "2023-2024",
+    "teacherId": "teacher3"
+  }
+]
