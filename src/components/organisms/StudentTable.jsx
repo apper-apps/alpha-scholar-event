@@ -19,11 +19,11 @@ const StudentTable = ({ students, onEdit, onDelete, onViewDetails }) => {
     }
   };
 
-  const sortedStudents = [...students].sort((a, b) => {
+const sortedStudents = [...students].sort((a, b) => {
     let aValue = a[sortField];
     let bValue = b[sortField];
     
-    if (sortField === "enrollmentDate") {
+    if (sortField === "enrollment_date_c") {
       aValue = new Date(aValue);
       bValue = new Date(bValue);
     }
@@ -33,7 +33,7 @@ const StudentTable = ({ students, onEdit, onDelete, onViewDetails }) => {
     return 0;
   });
 
-  const getStatusBadge = (status) => {
+const getStatusBadge = (status) => {
     const variants = {
       active: "success",
       inactive: "warning",
@@ -70,49 +70,49 @@ const StudentTable = ({ students, onEdit, onDelete, onViewDetails }) => {
         <table className="w-full">
           <thead className="bg-surface border-b border-gray-200">
             <tr>
-              <th
+<th
                 className="text-left py-4 px-6 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleSort("firstName")}
+                onClick={() => handleSort("first_name_c")}
               >
                 <div className="flex items-center space-x-2">
                   <span>Name</span>
-                  <SortIcon field="firstName" />
+                  <SortIcon field="first_name_c" />
                 </div>
               </th>
-              <th
+<th
                 className="text-left py-4 px-6 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleSort("email")}
+                onClick={() => handleSort("email_c")}
               >
                 <div className="flex items-center space-x-2">
                   <span>Email</span>
-                  <SortIcon field="email" />
+                  <SortIcon field="email_c" />
                 </div>
               </th>
-              <th
+<th
                 className="text-left py-4 px-6 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleSort("classId")}
+                onClick={() => handleSort("class_id_c")}
               >
                 <div className="flex items-center space-x-2">
                   <span>Class</span>
-                  <SortIcon field="classId" />
+                  <SortIcon field="class_id_c" />
                 </div>
               </th>
-              <th
+<th
                 className="text-left py-4 px-6 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleSort("enrollmentDate")}
+                onClick={() => handleSort("enrollment_date_c")}
               >
                 <div className="flex items-center space-x-2">
                   <span>Enrolled</span>
-                  <SortIcon field="enrollmentDate" />
+                  <SortIcon field="enrollment_date_c" />
                 </div>
               </th>
-              <th
+<th
                 className="text-left py-4 px-6 font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleSort("status")}
+                onClick={() => handleSort("status_c")}
               >
                 <div className="flex items-center space-x-2">
                   <span>Status</span>
-                  <SortIcon field="status" />
+                  <SortIcon field="status_c" />
                 </div>
               </th>
               <th className="text-right py-4 px-6 font-semibold text-gray-700">Actions</th>
@@ -123,27 +123,27 @@ const StudentTable = ({ students, onEdit, onDelete, onViewDetails }) => {
               <tr key={student.Id} className="hover:bg-gray-50 transition-colors">
                 <td className="py-4 px-6">
                   <div className="flex items-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary/10 to-primary/20 rounded-full flex items-center justify-center mr-3">
+<div className="w-10 h-10 bg-gradient-to-br from-primary/10 to-primary/20 rounded-full flex items-center justify-center mr-3">
                       <span className="text-sm font-semibold text-primary">
-                        {student.firstName[0]}{student.lastName[0]}
+                        {student.first_name_c?.[0]}{student.last_name_c?.[0]}
                       </span>
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        {student.firstName} {student.lastName}
+                        {student.first_name_c} {student.last_name_c}
                       </p>
                     </div>
                   </div>
                 </td>
-                <td className="py-4 px-6 text-gray-600">{student.email}</td>
+<td className="py-4 px-6 text-gray-600">{student.email_c}</td>
                 <td className="py-4 px-6">
-                  <Badge variant="primary" size="sm">{student.classId}</Badge>
+                  <Badge variant="primary" size="sm">{student.class_id_c}</Badge>
                 </td>
                 <td className="py-4 px-6 text-gray-600">
-                  {format(new Date(student.enrollmentDate), "MMM dd, yyyy")}
+                  {format(new Date(student.enrollment_date_c), "MMM dd, yyyy")}
                 </td>
-                <td className="py-4 px-6">
-                  {getStatusBadge(student.status)}
+<td className="py-4 px-6">
+                  {getStatusBadge(student.status_c)}
                 </td>
                 <td className="py-4 px-6 text-right">
                   <div className="flex items-center justify-end space-x-2">

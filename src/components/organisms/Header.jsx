@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useContext, useState } from "react";
+import { toast } from "react-toastify";
+import { AuthContext } from "@/App";
+import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
-import { toast } from "react-toastify";
 
 const Header = ({ title, onSearch, showSearch = true }) => {
   const [notifications] = useState(3);
@@ -37,7 +38,7 @@ const Header = ({ title, onSearch, showSearch = true }) => {
             </div>
           )}
           
-          <div className="flex items-center space-x-2">
+<div className="flex items-center space-x-2">
             <Button
               variant="ghost"
               size="sm"
@@ -52,24 +53,42 @@ const Header = ({ title, onSearch, showSearch = true }) => {
               )}
             </Button>
 
+            <LogoutButton />
+
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
               <ApperIcon name="User" className="w-4 h-4 text-white" />
             </div>
           </div>
         </div>
+</div>
       </div>
-
-      {showSearch && (
-        <div className="md:hidden mt-4">
-          <SearchBar
-            placeholder="Search students..."
-            onSearch={onSearch}
-            className="w-full"
-          />
-        </div>
-      )}
     </div>
   );
 };
+
+function LogoutButton() {
+  const { logout } = useContext(AuthContext);
+  
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Failed to logout");
+    }
+  };
+  
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={handleLogout}
+      className="p-2"
+      title="Logout"
+    >
+      <ApperIcon name="LogOut" className="w-5 h-5" />
+    </Button>
+  );
+}
 
 export default Header;

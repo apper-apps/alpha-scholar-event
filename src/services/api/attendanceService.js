@@ -1,61 +1,292 @@
-import attendanceData from "@/services/mockData/attendance.json";
-
-let attendance = [...attendanceData];
-
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const { ApperClient } = window.ApperSDK;
 
 export const attendanceService = {
   async getAll() {
-    await delay(300);
-    return [...attendance];
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "notes_c" } }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
   },
 
   async getById(id) {
-    await delay(200);
-    const record = attendance.find(a => a.Id === parseInt(id));
-    if (!record) {
-      throw new Error("Attendance record not found");
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "notes_c" } }
+        ]
+      };
+      
+      const response = await apperClient.getRecordById('attendance_c', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching attendance record with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    return { ...record };
   },
 
   async create(attendanceData) {
-    await delay(400);
-    const newRecord = {
-      ...attendanceData,
-      Id: Math.max(...attendance.map(a => a.Id)) + 1
-    };
-    attendance.push(newRecord);
-    return { ...newRecord };
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include updateable fields
+      const createData = {
+        Name: `Attendance - ${attendanceData.date || attendanceData.date_c}`,
+        student_id_c: parseInt(attendanceData.studentId || attendanceData.student_id_c),
+        date_c: attendanceData.date || attendanceData.date_c,
+        status_c: attendanceData.status || attendanceData.status_c,
+        notes_c: attendanceData.notes || attendanceData.notes_c || ""
+      };
+      
+      const params = {
+        records: [createData]
+      };
+      
+      const response = await apperClient.createRecord('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create attendance ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          throw new Error(failedRecords[0].message || 'Failed to create attendance record');
+        }
+        
+        return successfulRecords[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
   },
 
   async update(id, attendanceData) {
-    await delay(350);
-    const index = attendance.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Attendance record not found");
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      // Only include updateable fields
+      const updateData = {
+        Id: parseInt(id),
+        Name: `Attendance - ${attendanceData.date || attendanceData.date_c}`,
+        student_id_c: parseInt(attendanceData.studentId || attendanceData.student_id_c),
+        date_c: attendanceData.date || attendanceData.date_c,
+        status_c: attendanceData.status || attendanceData.status_c,
+        notes_c: attendanceData.notes || attendanceData.notes_c || ""
+      };
+      
+      const params = {
+        records: [updateData]
+      };
+      
+      const response = await apperClient.updateRecord('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update attendance ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          throw new Error(failedUpdates[0].message || 'Failed to update attendance record');
+        }
+        
+        return successfulUpdates[0]?.data;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    attendance[index] = { ...attendance[index], ...attendanceData };
-    return { ...attendance[index] };
   },
 
   async delete(id) {
-    await delay(250);
-    const index = attendance.findIndex(a => a.Id === parseInt(id));
-    if (index === -1) {
-      throw new Error("Attendance record not found");
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete attendance ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          throw new Error(failedDeletions[0].message || 'Failed to delete attendance record');
+        }
+        
+        return true;
+      }
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting attendance record:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    const deletedRecord = attendance.splice(index, 1)[0];
-    return { ...deletedRecord };
   },
 
   async getByStudent(studentId) {
-    await delay(300);
-    return attendance.filter(a => a.studentId === parseInt(studentId)).map(a => ({ ...a }));
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "notes_c" } }
+        ],
+        where: [
+          {
+            FieldName: "student_id_c",
+            Operator: "EqualTo",
+            Values: [parseInt(studentId)]
+          }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by student:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
   },
 
   async getByDate(date) {
-    await delay(300);
-    return attendance.filter(a => a.date === date).map(a => ({ ...a }));
-  }
+    try {
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "student_id_c" } },
+          { field: { Name: "date_c" } },
+          { field: { Name: "status_c" } },
+          { field: { Name: "notes_c" } }
+        ],
+        where: [
+          {
+            FieldName: "date_c",
+            Operator: "EqualTo",
+            Values: [date]
+          }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('attendance_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching attendance by date:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
+}
 };
